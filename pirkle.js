@@ -1,4 +1,4 @@
-var Pirkle = (function (Pirkle) {
+(function (Pirkle) {
 
   Pirkle.emptyFn = function () {};
 
@@ -263,4 +263,4 @@ var Pirkle = (function (Pirkle) {
 
   return Pirkle;
 
-}(window.Pirkle || {}));
+}(window.Pirkle = window.Pirkle || {}));
