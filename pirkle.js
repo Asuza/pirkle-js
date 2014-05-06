@@ -105,7 +105,15 @@ var Pirkle = (function (Pirkle) {
       request.addEventListener("abort", this.transferCanceled, false);
 
       request.open(options.method, options.url, useAsync);
-      request.setRequestHeader("Content-Type", "application/json");
+      if (options.headers) {
+        for (var header in options.headers) {
+          if(options.headers.hasOwnProperty(header)){
+            request.setRequestHeader(header, options.headers[header]);
+          }
+        }
+      } else {
+        request.setRequestHeader("Content-Type", "application/json");
+      }
       request.send(options.data);
 
       return request;
