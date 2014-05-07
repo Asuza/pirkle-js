@@ -16,8 +16,16 @@ var Pirkle = (function (Pirkle) {
           }
         }
       },
-      set: function (name, value) {
-        document.cookie = name + '=' + value;
+      set: function (name, value, path, domain) {
+        if (domain !== undefined) {
+          document.cookie = name + "=" + value + ";path=" + path + "domain=." + domain;
+        } else {
+          if (path !== undefined) {
+            document.cookie = name + "=" + value + ";path=" + path;
+          } else {
+            document.cookie = name + '=' + value;
+          }
+        }
       }
   };
 
