@@ -16,8 +16,29 @@
           }
         }
       },
-      set: function (name, value) {
-        document.cookie = name + '=' + value;
+      set: function (name, value, path, domain) {
+        var newCookie = name + '=' + value;
+
+        if (path !== undefined) {
+          newCookie += ";path=" + path;
+        }
+        if (domain !== undefined) {
+          newCookie += ";domain=." + domain;
+        }
+
+        document.cookie = newCookie;
+      },
+      delete: function (name, path, domain) {
+        var newCookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
+
+        if (path !== undefined) {
+          newCookie += ";path=" + path;
+        }
+        if (domain !== undefined) {
+          newCookie += ";domain=." + domain;
+        }
+
+        document.cookie = newCookie;
       }
   };
 
@@ -131,7 +152,7 @@
     transferComplete: function () {
       this.callback({
         success: true,
-        response: JSON.parse(this.responseText),
+        response: this.responseText,
         request: this
       });
     },
