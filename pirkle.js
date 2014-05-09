@@ -28,7 +28,7 @@ var Pirkle = (function (Pirkle) {
 
         document.cookie = newCookie;
       },
-      delete: function (name, path, domain) {
+      expire: function (name, path, domain) {
         var newCookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
 
         if (path !== undefined) {
