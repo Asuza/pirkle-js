@@ -121,9 +121,15 @@ var Pirkle = (function (Pirkle) {
       request.callback = options.callback || Pirkle.emptyFn;
       request.options = options;
 
-      request.addEventListener("load", this.transferComplete, false);
-      request.addEventListener("error", this.transferFailed, false);
-      request.addEventListener("abort", this.transferCanceled, false);
+      if (request.addEventListener) {
+        request.addEventListener("load", this.transferComplete, false);
+        request.addEventListener("error", this.transferFailed, false);
+        request.addEventListener("abort", this.transferCanceled, false);
+      } else if (request.attachEvent) {
+        request.attachEvent("onload", this.transferComplete);
+        request.attachEvent("onerror", this.transferFailed);
+        request.attachEvent("onabort", this.transferCanceled);
+      }
 
       request.open(options.method, options.url, useAsync);
       if (options.headers) {
@@ -286,7 +292,11 @@ var Pirkle = (function (Pirkle) {
         useCapture: capture
       });
 
-      node.addEventListener(eventName, handler, capture);
+      if (node.addEventListener) {
+        node.addEventListener(eventName, handler, capture);
+      } else if (node.attachEvent) {
+        node.attachEvent("on" + eventName, handler);
+      }
     }
   };
 
