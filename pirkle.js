@@ -115,8 +115,27 @@ var Pirkle = (function (Pirkle) {
 
   Pirkle.Ajax = {
     request: function (options) {
-      var request = new XMLHttpRequest(),
+      var request,
+          me = this,
           useAsync = options.async === false ? false : true;
+
+      if (window.XMLHttpRequest) {
+        request = new XMLHttpRequest();
+      } else if(window.ActiveXObject) {
+        try {
+          request = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+          try {
+            request = new ActiveXObject("Microsoft.XMLHTTP");
+          } catch (e) {
+            request = false;
+          }
+        }
+      }
+
+      if (request === false) {
+        return false;
+      }
 
       request.callback = options.callback || Pirkle.emptyFn;
       request.options = options;
@@ -129,6 +148,30 @@ var Pirkle = (function (Pirkle) {
         request.attachEvent("onload", this.transferComplete);
         request.attachEvent("onerror", this.transferFailed);
         request.attachEvent("onabort", this.transferCanceled);
+      } else {
+        request.onreadystatechange = function() {
+          if (request.readyState !== 4) {
+            return false;
+          }
+          if (request.status !== 200) {
+            request.callback(
+              {
+              success: false,
+              response: null,
+              request: request
+              }
+            );
+            return false;
+          }
+          request.callback(
+            {
+              success: true,
+              response: request.responseText,
+              request: request
+            }
+          );
+          return true;
+        };
       }
 
       request.open(options.method, options.url, useAsync);
